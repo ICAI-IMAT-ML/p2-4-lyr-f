@@ -95,19 +95,23 @@ class LinearRegressor:
         )  # Small random numbers
         self.intercept = np.random.rand() * 0.01
 
-        # Implement gradient descent (TODO)
+         # Separar la columna de 1s (intercepto) del resto de las características
+        X_bias = X[:, 0]  # Columna de 1s (bias)
+        X_features = X[:, 1:]  # Otras características (sin la columna de 1s)
+
         for epoch in range(iterations):
-            predictions = None
+            predictions = (self.intercept + X_features @ self.coefficients)
             error = predictions - y
 
             # TODO: Write the gradient values and the updates for the paramenters
-            gradient = None
-            self.intercept -= None
-            self.coefficients -= None
+            gradient_coeff = (2/m)*np.sum(X.T@error)
+            gradient_interc = (2/m)*np.sum(error)
+            self.intercept -= learning_rate*gradient_interc
+            self.coefficients -= learning_rate*gradient_coeff
 
             # TODO: Calculate and print the loss every 10 epochs
             if epoch % 1000 == 0:
-                mse = None
+                mse = (np.sum((y-predictions)**2))/m
                 print(f"Epoch {epoch}: MSE = {mse}")
 
     def predict(self, X):
@@ -125,12 +129,14 @@ class LinearRegressor:
             ValueError: If the model is not yet fitted.
         """
 
-        # Paste your code from last week
-
         if self.coefficients is None or self.intercept is None:
             raise ValueError("Model is not yet fitted")
 
-        return None
+        if np.ndim(X) == 1:
+            predictions = self.intercept + self.coefficients * X
+        else:
+            predictions = (self.intercept + X @ self.coefficients)
+        return predictions
 
 
 def evaluate_regression(y_true, y_pred):
@@ -144,18 +150,17 @@ def evaluate_regression(y_true, y_pred):
     Returns:
         dict: A dictionary containing the R^2, RMSE, and MAE values.
     """
-
     # R^2 Score
-    # TODO
-    r_squared = None
+    rss = np.sum((y_true-y_pred)**2)
+    tss = np.sum((y_true-np.mean(y_true))**2)
+    r_squared = 1 - rss/tss
 
     # Root Mean Squared Error
-    # TODO
-    rmse = None
+    
+    rmse = np.sqrt(np.sum((y_true-y_pred)**2)/len(y_true))
 
     # Mean Absolute Error
-    # TODO
-    mae = None
+    mae = np.sum(abs(y_true-y_pred))/len(y_true)
 
     return {"R2": r_squared, "RMSE": rmse, "MAE": mae}
 
