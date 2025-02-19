@@ -64,11 +64,15 @@ class LinearRegressor:
         Returns:
             None: Modifies the model's coefficients and intercept in-place.
         """
-        # Replace this code with the code you did in the previous laboratory session
 
         # Store the intercept and the coefficients of the model
-        self.intercept = None
-        self.coefficients = None
+        X = np.column_stack((np.ones(X.shape[0]), X))
+        x_transpuesta = X.T
+        W = np.linalg.pinv(x_transpuesta@X)@x_transpuesta@y
+        W = W.T
+
+        self.intercept = W[0]
+        self.coefficients = W[1:]
 
     def fit_gradient_descent(self, X, y, learning_rate=0.01, iterations=1000):
         """
