@@ -66,7 +66,6 @@ class LinearRegressor:
         """
 
         # Store the intercept and the coefficients of the model
-        X = np.column_stack((np.ones(X.shape[0]), X))
         x_transpuesta = X.T
         W = np.linalg.pinv(x_transpuesta@X)@x_transpuesta@y
         W = W.T
