@@ -13,6 +13,8 @@ class LinearRegressor:
     def __init__(self):
         self.coefficients = None
         self.intercept = None
+        self.coefficient_history = []
+        self.loss_history = []
 
     """
     This next "fit" function is a general function that either calls the *fit_multiple* code that
@@ -102,14 +104,17 @@ class LinearRegressor:
             predictions = (self.intercept + X_features @ self.coefficients)
             error = predictions - y
 
-            # TODO: Write the gradient values and the updates for the paramenters
+            # Write the gradient values and the updates for the paramenters
             gradient_coeff = (2/m)*np.sum(X.T@error)
             gradient_interc = (2/m)*np.sum(error)
             self.intercept -= learning_rate*gradient_interc
             self.coefficients -= learning_rate*gradient_coeff
 
-            # TODO: Calculate and print the loss every 10 epochs
-            if epoch % 1000 == 0:
+            mse = (np.sum((y-predictions)**2))/m
+            self.loss_history.append(mse)
+            self.coefficient_history.append((self.coefficients.copy(), self.intercept.copy()))
+            # Calculate and print the loss every 100 epochs
+            if epoch % 100 == 0:
                 mse = (np.sum((y-predictions)**2))/m
                 print(f"Epoch {epoch}: MSE = {mse}")
 
