@@ -101,14 +101,13 @@ class LinearRegressor:
         X_features = X[:, 1:]  # Otras características (sin la columna de 1s)
 
         for epoch in range(iterations):
-            predictions = (self.intercept + X_features @ self.coefficients)
+            predictions = self.predict(X_features)
             error = predictions - y
 
             # Write the gradient values and the updates for the paramenters
-            gradient_coeff = (2/m)*np.sum(X.T@error)
-            gradient_interc = (2/m)*np.sum(error)
-            self.intercept -= learning_rate*gradient_interc
-            self.coefficients -= learning_rate*gradient_coeff
+            gradient_coeff = (2/m)*(X.T@error)
+            self.intercept -= learning_rate*gradient_coeff[0]
+            self.coefficients -= (learning_rate*gradient_coeff[1:])
 
             mse = (np.sum((y-predictions)**2))/m
             self.loss_history.append(mse)
